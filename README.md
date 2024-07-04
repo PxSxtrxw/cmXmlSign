@@ -44,11 +44,11 @@ node server
 ```
 El servidor se iniciará en http://localhost:3001.
 
-# Guardar Archivos XML Devueltos 
+## Guardar Archivos XML Devueltos 
 
 El servidor guardara automaticamente en una carpeta generada llamada `signed_xmls` y en esta se creara un archivo con un nombre en especifico para cada archivo XML firmado devuelto por el servidor
 
-# Logger
+## Logger
 
 el servidor guardara la actividad de errores en `error.log` y la informacion de toda la actividad del servidor en `info.log`
 
