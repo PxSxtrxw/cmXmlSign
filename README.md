@@ -31,7 +31,7 @@ npm install fs
 ```
 ## Configuración
 
-Antes de ejecutar el servidor, asegúrese de configurar adecuadamente los parámetros y datos necesarios según la documentación de la SET. Los datos del archivo XML deve de cumplir con los requisitos necesarios para poder ser firmado, hay mas informacion sobre la generacion de archivos XML en este repositorio (cmXmlGen)[https://github.com/PxSxtrxw/cmXmlGen].
+Antes de ejecutar el servidor, asegúrese de configurar adecuadamente los parámetros y datos necesarios según la documentación de la SET. Los datos del archivo XML deve de cumplir con los requisitos necesarios para poder ser firmado, hay mas informacion sobre la generacion de archivos XML en este repositorio [cmXmlGen](https://github.com/PxSxtrxw/cmXmlGen).
 
 ## Uso
 
