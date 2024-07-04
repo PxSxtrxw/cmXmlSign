@@ -7,6 +7,7 @@ Este repositorio contiene una extensión para la firma de archivos XML necesario
 Para utilizar este código, es necesario tener instalado:
 
 - Node.js
+- Java
 - npm (Node Package Manager)
 
 ## Instalación
