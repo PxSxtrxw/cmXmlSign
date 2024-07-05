@@ -26,8 +26,11 @@ npm install xml2js
 ```bash
 npm install iconv-lite
 ```
-```bash
+```bash 
 npm install fs
+```
+```bash
+npm install node-forge
 ```
 ## Configuración
 
@@ -47,6 +50,10 @@ El servidor se iniciará en http://localhost:3001.
 ## Guardar Archivos XML Devueltos 
 
 El servidor guardara automaticamente en una carpeta generada llamada `signed_xmls` y en esta se creara un archivo con un nombre en especifico para cada archivo XML firmado devuelto por el servidor
+
+## Verificar los Certificados con formato .p12
+
+El servidor analizara si los certificados son validos y tambien mostrara por consola los datos del certificado
 
 ## Logger
 
