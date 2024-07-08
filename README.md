@@ -26,9 +26,6 @@ npm install xml2js
 ```bash
 npm install iconv-lite
 ```
-```bash 
-npm install fs
-```
 ```bash
 npm install node-forge
 ```
