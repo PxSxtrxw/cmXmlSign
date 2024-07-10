@@ -24,10 +24,13 @@ npm install iconv-lite
 npm install xml2js
 ```
 ```bash
-npm install iconv-lite
+npm install winstone
 ```
 ```bash
 npm install node-forge
+```
+```bash
+npm install xml-js
 ```
 ## Configuración
 
