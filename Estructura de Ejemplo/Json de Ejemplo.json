@@ -1,1 +1,5 @@
-
+{
+    "password": "Contraseña del certificado P12",
+    "certPath": "C:ruta/al/Certificado.p12",
+    "xmlString": "(Aqui va el Xml Generado Anteriormente)"
+}
