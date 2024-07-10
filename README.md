@@ -59,5 +59,10 @@ El servidor analizara si los certificados son validos y tambien mostrara por con
 
 el servidor guardara la actividad de errores en `error.log` y la informacion de toda la actividad del servidor en `info.log`
 
+## Funcionamiento del Servidor HTTP
+
+Al momento de ejecutar el archivo `server.js` se creara un servidor que estara escuchando una estructura Json con los parametros necesarios para Generar la firma en el XML en una solicitud POST y el servidor le dara una estructura XML con una firma integrada
+en la carpeta `Estructuras de Ejemplo` tiene un ejemplo de como hacer la solicitud POST correctamente al servidor 
+
 
 
