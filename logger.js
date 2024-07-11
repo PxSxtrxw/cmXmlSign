@@ -2,15 +2,15 @@ const { createLogger, transports, format } = require('winston');
 const fs = require('fs');
 const path = require('path');
 
-// Directorio donde se guardarán los archivos de log
-const logDirectory = path.join(__dirname, 'logs');
+// Ruta de la carpeta donde se guardarán los logs
+const logFolder = path.join(__dirname, 'logs');
 
-// Verificar que el directorio de logs exista, si no, crearlo
-if (!fs.existsSync(logDirectory)) {
-    fs.mkdirSync(logDirectory);
+// Verificar que la carpeta de logs existe, si no, crearla
+if (!fs.existsSync(logFolder)) {
+    fs.mkdirSync(logFolder);
 }
 
-// Formato personalizado para los logs
+// Configuración del formato personalizado para los logs
 const customFormat = format.printf(info => {
     const separator = '-----------------------------------------------------------------------';
     let message = `${info.timestamp} - ${info.level.toUpperCase()} - ${separator}\n`;
@@ -26,7 +26,7 @@ const customFormat = format.printf(info => {
     return message;
 });
 
-// Configuración del logger de eventos (info)
+// Crear y exportar los loggers
 const infoLogger = createLogger({
     level: 'info',
     format: format.combine(
@@ -35,11 +35,10 @@ const infoLogger = createLogger({
     ),
     transports: [
         new transports.Console(),
-        new transports.File({ filename: path.join(logDirectory, 'eventLogger.log'), level: 'info', maxsize: 5242880, maxFiles: 5 }) // 5MB por archivo, máximo 5 archivos
+        new transports.File({ filename: path.join(logFolder, 'eventLogger.log'), level: 'info', maxsize: 5242880, maxFiles: 5 }) // 5MB max size per file, 5 files max
     ]
 });
 
-// Configuración del logger de errores
 const errorLogger = createLogger({
     level: 'error',
     format: format.combine(
@@ -48,7 +47,7 @@ const errorLogger = createLogger({
     ),
     transports: [
         new transports.Console(),
-        new transports.File({ filename: path.join(logDirectory, 'errorLogger.log'), level: 'error', maxsize: 5242880, maxFiles: 5 }) // 5MB por archivo, máximo 5 archivos
+        new transports.File({ filename: path.join(logFolder, 'errorLogger.log'), level: 'error', maxsize: 5242880, maxFiles: 5 }) // 5MB max size per file, 5 files max
     ]
 });
 
