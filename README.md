@@ -24,7 +24,7 @@ npm install iconv-lite
 npm install xml2js
 ```
 ```bash
-npm install winstone
+npm install winston
 ```
 ```bash
 npm install node-forge
@@ -61,8 +61,12 @@ El servidor analizara si los certificados son validos y tambien mostrara por con
 
 ## Funcionamiento del Servidor HTTP
 
-Al momento de ejecutar el archivo `server.js` se creara un servidor que estara escuchando una estructura XML con los parametros necesarios para Generar la firma en el XML en una solicitud POST y el servidor le dara una estructura XML con una firma integrada
-Asegurate de configurar correctamente el archivo `.env` en este se asignaran los parametros necesarios para realizar la firma
+Al momento de ejecutar el archivo `server.js` se creara un servidor que estara escuchando una estructura Json con los parametros necesarios para Generar la firma en el XML en una solicitud POST y el servidor le dara una estructura XML con una firma integrada
+Asegurate que la estructura Json cumpla con todos los parametros validos, los parametros de la estructura Json son: 
+
+- `certPath`: Ruta al certificado.p12
+- `password`: Contraseña del certificado .p12
+- `xmlString`: XML generado Anteriormente
 
 ## Logger
 
