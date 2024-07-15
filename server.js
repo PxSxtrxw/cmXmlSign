@@ -18,8 +18,19 @@ if (!fs.existsSync(signedXMLFolderPath)) {
     fs.mkdirSync(signedXMLFolderPath);
 }
 
-// Función para manejar solicitudes XML
-function handleXMLRequest(req, res, xmlString, certPath, password) {
+function handleXMLRequest(req, res, xmlFilePath, certPath, password) {
+    // Validar la existencia del archivo XML
+    if (!fs.existsSync(xmlFilePath)) {
+        const errorMessage = 'Invalid xmlFilePath, XML file does not exist';
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: errorMessage }));
+        errorLogger.error(errorMessage);
+        return;
+    }
+
+    // Leer el contenido del archivo XML
+    const xmlString = fs.readFileSync(xmlFilePath, 'utf-8');
+
     // Validar la existencia de certPath
     if (!fs.existsSync(certPath)) {
         const errorMessage = 'Invalid certPath, certificate file does not exist';
@@ -101,22 +112,22 @@ function handleXMLRequest(req, res, xmlString, certPath, password) {
 
         xmlsign.signXML(xmlString, certPath, password)
         .then(xmlFirmado => {
-            // Parsear el string XML para obtener dCdCDERef
+            // Parsear el string XML para obtener el valor del atributo Id en <DE>
             const xmlDoc = xmlParser.xml2js(xmlString, { compact: true });
-            let dCdCDERefValue;
+            let idValue;
 
-            if (xmlDoc.rDE && xmlDoc.rDE.DE && xmlDoc.rDE.DE.gCamDEAsoc && xmlDoc.rDE.DE.gCamDEAsoc.dCdCDERef) {
-                dCdCDERefValue = xmlDoc.rDE.DE.gCamDEAsoc.dCdCDERef._text;
+            if (xmlDoc.rDE && xmlDoc.rDE.DE && xmlDoc.rDE.DE._attributes && xmlDoc.rDE.DE._attributes.Id) {
+                idValue = xmlDoc.rDE.DE._attributes.Id;
             } else {
-                const errorMessage = 'Missing dCdCDERef element in the original XML';
+                const errorMessage = 'Missing Id attribute in the <DE> element of the original XML';
                 res.writeHead(400, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ error: errorMessage }));
                 errorLogger.error(errorMessage);
                 return;
             }
 
-            // Construir el nombre del archivo usando dCdCDERef
-            const filename = `signed-${padCdc(dCdCDERefValue)}.xml`; // Ejemplo: "signed-ValorDcdCDERef.xml"
+            // Construir el nombre del archivo usando Id
+            const filename = `signed-${idValue}.xml`; // Ejemplo: "signed-01022197575001001000000122022081410002983981.xml"
 
             // Guardar el XML firmado en la carpeta especificada con el nombre generado
             const filePath = path.join(signedXMLFolderPath, filename);
@@ -152,10 +163,7 @@ function handleXMLRequest(req, res, xmlString, certPath, password) {
     }
 }
 
-// Función para rellenar con ceros a la izquierda el valor de dCdCDERef
-function padCdc(value) {
-    return value.padStart(10, '0');
-}
+
 
 // Crear servidor HTTP
 const server = http.createServer((req, res) => {
