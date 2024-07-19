@@ -71,7 +71,7 @@ Asegurate que la estructura Json cumpla con todos los parametros validos, los pa
 
 - `certPath`: Ruta al certificado.p12
 - `password`: Contraseña del certificado .p12
-- `xmlString`: XML generado Anteriormente
+- `xml`: XML generado Anteriormente
 
 ## Logger
 
