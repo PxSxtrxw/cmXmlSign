@@ -6,6 +6,8 @@ const { parseString } = require('xml2js');
 const xmlsign = require('facturacionelectronicapy-xmlsign').default || require('facturacionelectronicapy-xmlsign');
 const xmlParser = require('xml-js');
 const { infoLogger, errorLogger } = require('./logger'); // Importar los loggers configurados
+const { handleEventXMLRequest } = require('./EventSing'); // Ajusta la ruta si es necesario
+
 
 const PORT = 3002;
 const HOST = 'localhost';
@@ -127,7 +129,7 @@ function handleXMLRequest(req, res, xmlFilePath, certPath, password) {
             }
 
             // Construir el nombre del archivo usando Id
-            const filename = `signed-${idValue}.xml`; // Ejemplo: "signed-01022197575001001000000122022081410002983981.xml"
+            const filename = `signed-regu-${idValue}.xml`; // Ejemplo: "signed-01022197575001001000000122022081410002983981.xml"
 
             // Guardar el XML firmado en la carpeta especificada con el nombre generado
             const filePath = path.join(signedXMLFolderPath, filename);
@@ -163,8 +165,7 @@ function handleXMLRequest(req, res, xmlFilePath, certPath, password) {
     }
 }
 
-
-
+// Crear servidor HTTP
 // Crear servidor HTTP
 const server = http.createServer((req, res) => {
     if (req.method === 'POST') { 
@@ -175,10 +176,33 @@ const server = http.createServer((req, res) => {
 
         req.on('end', () => {
             try {
-                const { xmlString, certPath, password } = JSON.parse(body);
+                const { xml, certPath, password } = JSON.parse(body);
 
-                // Manejar solicitud XML
-                handleXMLRequest(req, res, xmlString, certPath, password);
+                // Verificar el endpoint
+                if (req.url === '/regular') {
+                    // Manejar solicitud XML para el endpoint /regular
+                    handleXMLRequest(req, res, xml, certPath, password);
+                } else if (req.url === '/evento') {
+                    // Manejar solicitud XML para el endpoint /evento
+                    handleEventXMLRequest(xml, certPath, password, (err, filename) => {
+                        if (err) {
+                            const errorMessage = `Error: ${err.message}`;
+                            res.writeHead(500, { 'Content-Type': 'application/json' });
+                            res.end(JSON.stringify({ error: errorMessage }));
+                            errorLogger.error(errorMessage);
+                            return;
+                        }
+
+                        // Responder con el nombre del archivo firmado
+                        res.writeHead(200, { 'Content-Type': 'application/json' });
+                        res.end(JSON.stringify({ filename }));
+                    });
+                } else {
+                    const errorMessage = 'Endpoint not found';
+                    res.writeHead(404, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ error: errorMessage }));
+                    errorLogger.error(errorMessage);
+                }
             } catch (error) {
                 const errorMessage = 'Invalid JSON payload';
                 res.writeHead(400, { 'Content-Type': 'application/json' });
@@ -195,5 +219,5 @@ const server = http.createServer((req, res) => {
 
 // Iniciar el servidor
 server.listen(PORT, HOST, () => {
-    console.log(`Servidor iniciado en http://${HOST}:${PORT}`);
+    console.log(`Server running at http://${HOST}:${PORT}`);
 });
