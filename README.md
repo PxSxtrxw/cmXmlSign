@@ -49,7 +49,12 @@ Para iniciar el servidor de desarrollo, use el siguiente comando:
 ```bash
 node server
 ```
-El servidor se iniciará en http://localhost:3002.
+El servidor se iniciará en http://localhost:3002, el servidor tiene 2 formas de firmar los archivos XML:
+
+- `/regular`: Firma las estructuras XML generadas con el metodo regular
+- `/evento`: Firma las estructuras XML generadas con el cualquier otro metodo distinto al regular
+
+Para obtener mas informacion de los metodos de las estructuras XML generada puede visitar el repositorio [cmXmlGen](https://github.com/PxSxtrxw/cmXmlGen)
 
 ## Guardado de Archivos
 
