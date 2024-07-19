@@ -51,7 +51,7 @@ node server
 ```
 El servidor se iniciará en http://localhost:3002.
 
-## Guardar Archivos XML Devueltos 
+## Guardado de Archivos
 
 El servidor guardara automaticamente en una carpeta generada llamada `output` y en esta se creara un archivo con un nombre en especifico para cada archivo XML firmado devuelto por el servidor
 
