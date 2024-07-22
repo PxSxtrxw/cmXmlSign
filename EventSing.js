@@ -8,6 +8,15 @@ require('dotenv').config();
 // Obtiene la ruta del archivo .class desde las variables de entorno
 const javaClassPath = process.env.JAVA_CLASS_PATH;
 
+const eventTypes = {
+    'canc': 'cancelacion',
+    'inut': 'inutilizacion',
+    'conf': 'conformidad',
+    'disc': 'disconformidad',
+    'desc': 'desconocimiento',
+    'noti': 'notificacion'
+};
+
 if (!javaClassPath) {
     const errorMessage = 'Error: JAVA_CLASS_PATH no está definido en el archivo .env';
     errorLogger.error(errorMessage);
@@ -27,10 +36,18 @@ const getNumbersFromFileName = (fileName) => {
 };
 
 // Define la función para firmar el XML de evento
-const handleEventXMLRequest = (xmlFilePath, certPath, password, callback) => {
+const handleEventXMLRequest = (xmlFilePath, certPath, password, eventType, callback) => {
+    // Verificar si el tipo de evento existe en la lista
+    if (!eventTypes[eventType]) {
+        const errorMessage = `Tipo de evento '${eventType}' no existe.`;
+        errorLogger.error(errorMessage);
+        return callback(new Error(errorMessage));
+    }
+
+    infoLogger.info(`Tipo de evento proporcionado: ${eventTypes[eventType]}`);
+
     infoLogger.info(`Iniciando el proceso de firma para el archivo XML: ${xmlFilePath}`);
-    
-    // Verificar que el archivo XML existe
+
     if (!fs.existsSync(xmlFilePath)) {
         const errorMessage = `Invalid xmlFilePath: ${xmlFilePath} - XML file does not exist`;
         errorLogger.error(errorMessage);
@@ -38,7 +55,6 @@ const handleEventXMLRequest = (xmlFilePath, certPath, password, callback) => {
     }
     infoLogger.info(`Archivo XML encontrado: ${xmlFilePath}`);
 
-    // Verificar que el archivo certificado existe
     if (!fs.existsSync(certPath)) {
         const errorMessage = `Invalid certPath: ${certPath} - Certificate file does not exist`;
         errorLogger.error(errorMessage);
@@ -46,19 +62,15 @@ const handleEventXMLRequest = (xmlFilePath, certPath, password, callback) => {
     }
     infoLogger.info(`Archivo de certificado encontrado: ${certPath}`);
 
-    // Guardar el contenido del XML en un archivo temporal
     const tempXmlPath = path.join(__dirname, 'temp-evento.xml');
     infoLogger.info(`Guardando el XML en el archivo temporal: ${tempXmlPath}`);
     const xmlString = fs.readFileSync(xmlFilePath, 'utf-8');
     fs.writeFileSync(tempXmlPath, xmlString);
 
-    // Construir el comando para firmar el XML de eventos
     const command = `java -cp ${javaClassPath} SignXMLEvento "${tempXmlPath}" "${certPath}" "${password}"`;
     infoLogger.info(`Ejecutando el comando para firmar el XML: ${command}`);
 
-    // Ejecutar el comando
     exec(command, (error, stdout, stderr) => {
-        // Eliminar el archivo temporal
         fs.unlinkSync(tempXmlPath);
         infoLogger.info(`Archivo temporal eliminado: ${tempXmlPath}`);
 
@@ -74,9 +86,6 @@ const handleEventXMLRequest = (xmlFilePath, certPath, password, callback) => {
         }
         infoLogger.info(`Comando ejecutado exitosamente. Salida: ${stdout}`);
 
-        // Extraer el tipo de evento del nombre del archivo XML
-        const eventType = getEventTypeFromFileName(path.basename(xmlFilePath));
-        // Convertir las 4 letras del evento a nombre completo, si es necesario
         const eventTypes = {
             'gene': 'generar',
             'canc': 'cancelacion',
@@ -86,16 +95,15 @@ const handleEventXMLRequest = (xmlFilePath, certPath, password, callback) => {
             'desc': 'desconocimiento',
             'noti': 'notificacion'
         };
-        const eventName = eventTypes[eventType] || 'desconocido';
-        infoLogger.info(`Tipo de evento extraído: ${eventName}`);
 
-        // Extraer los números del nombre del archivo XML
+        const eventName = eventTypes[eventType] || 'desconocido';
+        infoLogger.info(`Tipo de evento proporcionado: ${eventName}`);
+
         const numbers = getNumbersFromFileName(path.basename(xmlFilePath));
         infoLogger.info(`Números extraídos del nombre del archivo XML: ${numbers}`);
 
-        // Construir el nombre del archivo usando el tipo de evento y los números
         const filename = `signed-${eventType}-${numbers}.xml`;
-        const signedXMLFolderPath = path.join(__dirname, 'output');  // Ajusta el directorio de salida si es necesario
+        const signedXMLFolderPath = path.join(__dirname, 'output');
         if (!fs.existsSync(signedXMLFolderPath)) {
             fs.mkdirSync(signedXMLFolderPath);
             infoLogger.info(`Carpeta de salida creada: ${signedXMLFolderPath}`);
@@ -104,7 +112,6 @@ const handleEventXMLRequest = (xmlFilePath, certPath, password, callback) => {
         const filePath = path.join(signedXMLFolderPath, filename);
         infoLogger.info(`Archivo firmado será guardado en: ${filePath}`);
 
-        // Verificar si el archivo ya existe
         if (fs.existsSync(filePath)) {
             const infoMessage = `El archivo ${filename} ya existe. Contenido del XML:`;
             infoLogger.info(infoMessage);
@@ -120,11 +127,9 @@ const handleEventXMLRequest = (xmlFilePath, certPath, password, callback) => {
                 return callback(new Error(errorMessage));
             }
 
-            // Informar sobre el tipo de evento firmado
             const infoMessage = `Evento firmado exitosamente: ${eventName}`;
             infoLogger.info(infoMessage);
 
-            // Llamar al callback con el nombre del archivo firmado
             callback(null, filename);
         });
     });
