@@ -78,15 +78,14 @@ Al ser ejecutado el programa desde el archivo  `server.js` tambien se ejecutara 
 
 Esta es la lista de eventos registrados y como llamar a cada evento:
 # Endpoint /eventos
-    - `cancelacion` : http://localhost:3002/evento/canc
-    - `inutilizacion` : http://localhost:3002/evento/inut
-    - `conformidad` : http://localhost:3002/evento/conf
-    - `disconformidad` : http://localhost:3002/evento/disc
-    - `desconocimiento` : http://localhost:3002/evento/desc
-     - `notificacion` : http://localhost:3002/evento/noti
-    
 
-
+- `cancelacion` : http://localhost:3002/evento/canc
+- `inutilizacion` : http://localhost:3002/evento/inut
+- `conformidad` : http://localhost:3002/evento/conf
+- `disconformidad` : http://localhost:3002/evento/disc
+- `desconocimiento` : http://localhost:3002/evento/desc
+- `notificacion` : http://localhost:3002/evento/noti
+  
 ## Logger
 
 el servidor guardara los loggers en una carpte llamada logs y la actividad de errores en `errorLogger.log` y la informacion de toda la actividad del servidor en `eventLogger.log`
