@@ -73,6 +73,20 @@ Asegurate que la estructura Json cumpla con todos los parametros validos, los pa
 - `password`: Contraseña del certificado .p12
 - `xml`: XML generado Anteriormente
 
+## Firmador de Eventos
+Al ser ejecutado el programa desde el archivo  `server.js` tambien se ejecutara el archivo  `EventSing.js` que se encarga de firmar las estructuras xml de eventos, la firma de eventos se realiza atraves del endpoint /evento/eventtype
+
+Esta es la lista de eventos registrados y como llamar a cada evento:
+# Endpoint /eventos
+    - `cancelacion` : http://localhost:3002/evento/canc
+    - `inutilizacion` : http://localhost:3002/evento/inut
+    - `conformidad` : http://localhost:3002/evento/conf
+    - `disconformidad` : http://localhost:3002/evento/disc
+    - `desconocimiento` : http://localhost:3002/evento/desc
+     - `notificacion` : http://localhost:3002/evento/noti
+    
+
+
 ## Logger
 
 el servidor guardara los loggers en una carpte llamada logs y la actividad de errores en `errorLogger.log` y la informacion de toda la actividad del servidor en `eventLogger.log`
