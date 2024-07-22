@@ -166,7 +166,6 @@ function handleXMLRequest(req, res, xmlFilePath, certPath, password) {
 }
 
 // Crear servidor HTTP
-// Crear servidor HTTP
 const server = http.createServer((req, res) => {
     if (req.method === 'POST') { 
         let body = '';
@@ -178,13 +177,12 @@ const server = http.createServer((req, res) => {
             try {
                 const { xml, certPath, password } = JSON.parse(body);
 
-                // Verificar el endpoint
                 if (req.url === '/regular') {
-                    // Manejar solicitud XML para el endpoint /regular
                     handleXMLRequest(req, res, xml, certPath, password);
-                } else if (req.url === '/evento') {
-                    // Manejar solicitud XML para el endpoint /evento
-                    handleEventXMLRequest(xml, certPath, password, (err, filename) => {
+                } else if (req.url.startsWith('/evento/')) {
+                    const eventType = req.url.split('/evento/')[1];
+
+                    handleEventXMLRequest(xml, certPath, password, eventType, (err, filename) => {
                         if (err) {
                             const errorMessage = `Error: ${err.message}`;
                             res.writeHead(500, { 'Content-Type': 'application/json' });
@@ -193,7 +191,6 @@ const server = http.createServer((req, res) => {
                             return;
                         }
 
-                        // Responder con el nombre del archivo firmado
                         res.writeHead(200, { 'Content-Type': 'application/json' });
                         res.end(JSON.stringify({ filename }));
                     });
@@ -215,7 +212,6 @@ const server = http.createServer((req, res) => {
         res.end(JSON.stringify({ error: 'Endpoint not found' }));
     }
 });
-
 
 // Iniciar el servidor
 server.listen(PORT, HOST, () => {
