@@ -1,4 +1,4 @@
-# cmXmlSing (Firma de XML para la SET)
+# cmXmlSign (Firma de XML para la SET)
 
 Este repositorio contiene una extensión para la firma de archivos XML necesarios para la comunicación con la SET (Subsecretaría de Estado de Tributación del Ministerio de Hacienda) de Paraguay. El código está diseñado para firmar archivos xml anteriormente generados.
 
